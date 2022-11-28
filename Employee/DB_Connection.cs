@@ -5,17 +5,17 @@ namespace Employee
 {
     internal class DB_Connection:Employee_LIst
     {
-        SqlConnection sqlCon = new SqlConnection("Server=LAPTOP-BJF2P1AA;Database=DatabaseOne;Trusted_Connection=true;");
+        readonly SqlConnection sqlCon = new("Server=LAPTOP-BJF2P1AA;Database=DatabaseOne;Trusted_Connection=true;");
 
 
         public void InsertEmp()
         {
             string query = "insert into Employees values(@Name,@Age,@Gender,@DeptId)";
-            Employee_LIst obj = new Employee_LIst();
+            Employee_LIst obj = new();
             var listing = obj.EmployeeMethod();
             foreach (var item in listing)
             {
-                SqlCommand cmd = new SqlCommand(query, sqlCon);
+                SqlCommand cmd = new(query, sqlCon);
                 cmd.Parameters.Add("@Name", System.Data.SqlDbType.NVarChar, 100).Value = item.Employee_Name;
                 cmd.Parameters.Add("@Age", System.Data.SqlDbType.NVarChar, 100).Value = item.Age;
                 cmd.Parameters.Add("@Gender", System.Data.SqlDbType.NVarChar, 100).Value = item.Gender;
@@ -32,7 +32,7 @@ namespace Employee
         {
 
             Console.WriteLine("The Employee Table Values are:");
-            SqlCommand cmd1 = new SqlCommand("select * from Employees", sqlCon);
+            SqlCommand cmd1 = new("select * from Employees", sqlCon);
             sqlCon.Open();
             SqlDataReader reader=cmd1.ExecuteReader();
             while (reader.Read())
@@ -52,13 +52,13 @@ namespace Employee
             string? Employee_Name = Console.ReadLine();
 
 
-            SqlCommand cmd2 = new SqlCommand("Update Employees set Employee_Name='" + Employee_Name + "' Where Employee_Id=" + EmployeeID + "", sqlCon);
+            SqlCommand cmd2 = new("Update Employees set Employee_Name='" + Employee_Name + "' Where Employee_Id=" + EmployeeID + "", sqlCon);
 
             cmd2.ExecuteNonQuery();
             Console.WriteLine("Updated Sucessfully");
             sqlCon.Close();
 
-            SqlCommand cmd3 = new SqlCommand("select * from Employees Where Employee_Id=" + EmployeeID + "", sqlCon);
+            SqlCommand cmd3 = new("select * from Employees Where Employee_Id=" + EmployeeID + "", sqlCon);
             sqlCon.Open();
             SqlDataReader reader3 = cmd3.ExecuteReader();
             while (reader3.Read())
@@ -77,7 +77,7 @@ namespace Employee
         {
 
             Console.WriteLine("The Employee Table Values are:");
-            SqlCommand cmd1 = new SqlCommand("select * from Employees", sqlCon);
+            SqlCommand cmd1 = new("select * from Employees", sqlCon);
             sqlCon.Open();
             SqlDataReader reader = cmd1.ExecuteReader();
             while (reader.Read())
@@ -97,7 +97,7 @@ namespace Employee
             
 
 
-            SqlCommand cmd2 = new SqlCommand("delete from Employees  Where Employee_Id=" + EmployeeID + "", sqlCon);
+            SqlCommand cmd2 = new("delete from Employees  Where Employee_Id=" + EmployeeID + "", sqlCon);
 
             cmd2.ExecuteNonQuery();
             Console.WriteLine("deleted Sucessfully");
@@ -108,7 +108,7 @@ namespace Employee
         public void Inserting()
         {
             Console.WriteLine("The Employee Table Values are:");
-            SqlCommand cmd4 = new SqlCommand("select * from Employees", sqlCon);
+            SqlCommand cmd4 = new("select * from Employees", sqlCon);
             sqlCon.Open();
             SqlDataReader reader = cmd4.ExecuteReader();
             while (reader.Read())
@@ -133,10 +133,18 @@ namespace Employee
             int EmpDeptID = int.Parse(Console.ReadLine());
 
             sqlCon.Open();
-            SqlCommand cmd5 = new SqlCommand("insert into  Employee values('" + EmpName + "', " + EmpAge + ", '"+EmpGender+"', "+EmpDeptID+")", sqlCon);
+            SqlCommand cmd5 = new("insert into  Employee values('" + EmpName + "', " + EmpAge + ", '"+EmpGender+"', "+EmpDeptID+")", sqlCon);
             cmd5.ExecuteNonQuery();
             sqlCon.Close();
 
+        }
+
+        public void DBClear()
+        {
+            SqlCommand cmdclear = new("truncate table employee", sqlCon);
+            sqlCon.Open();
+            cmdclear.ExecuteNonQuery();
+            sqlCon.Close();
         }
     }
 }
